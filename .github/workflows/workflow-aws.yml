@@ -1,1 +1,85 @@
-#Configuração para implatação automatizada do projeto.
+# Nome do workflow que será exibido no GitHub Actions
+name: Workflow AWS - Spring Boot Java 21
+
+# Evento que dispara a execução do workflow
+on:
+  # Executa o workflow quando houver push no repositório
+  push:
+    # Define que o workflow será executado apenas na branch main
+    branches:
+      - main
+
+# Lista de trabalhos que serão executados no workflow
+jobs:
+
+  # Primeiro trabalho: build do projeto
+  build:
+    # Nome amigável do job de build
+    name: Build do projeto Java 21
+
+    # Máquina virtual onde o job será executado
+    runs-on: ubuntu-latest
+
+    # Passos executados dentro do job de build
+    steps:
+
+      # Faz o checkout do código-fonte do repositório
+      - name: Baixar código-fonte
+        uses: actions/checkout@v4
+
+      # Configura o Java 21 no ambiente do GitHub Actions
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          # Define a distribuição do JDK
+          distribution: temurin
+
+          # Define a versão do Java usada no projeto
+          java-version: '21'
+
+      # Dá permissão de execução ao Maven Wrapper, caso o projeto use mvnw
+      - name: Permitir execução do Maven Wrapper
+        run: chmod +x mvnw
+
+      # Executa o build da aplicação Spring Boot sem rodar os testes
+      - name: Build da aplicação sem testes
+        run: ./mvnw clean package -DskipTests
+
+      # Exibe uma mensagem indicando que o build foi concluído
+      - name: Mensagem de build concluído
+        run: echo "Build do projeto Java 21 com Spring Boot concluído com sucesso."
+
+  # Segundo trabalho: deploy do projeto
+  deploy:
+    # Nome amigável do job de deploy
+    name: Deploy simulado na AWS
+
+    # Máquina virtual onde o job será executado
+    runs-on: ubuntu-latest
+
+    # Define que o deploy só será executado depois do build
+    needs: build
+
+    # Passos executados dentro do job de deploy
+    steps:
+
+      # Faz o checkout do código-fonte do repositório
+      - name: Baixar código-fonte
+        uses: actions/checkout@v4
+
+      # Simula o início do processo de deploy na AWS
+      - name: Iniciando deploy simulado
+        run: echo "Iniciando publicação da aplicação Spring Boot na AWS..."
+
+      # Simula o envio do artefato da aplicação para a AWS
+      - name: Simular envio da aplicação
+        run: echo "Enviando arquivo JAR da aplicação para o ambiente AWS..."
+
+      # Simula a execução da aplicação no ambiente AWS
+      - name: Simular execução da aplicação
+        run: echo "Aplicação Java 21 com Spring Boot publicada com sucesso na AWS."
+
+      # Exibe uma mensagem final do processo de deploy
+      - name: Finalizar deploy simulado
+        run: echo "Deploy simulado finalizado com sucesso."
+
